@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Clientes</title>
@@ -38,7 +39,9 @@
     <div class="table-container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">📋 Lista de Clientes</h2>
-            <a th:href="@{/clientes/nuevo}" class="btn btn-success">
+
+            <!-- Botón Agregar Cliente (solo ADMIN o EMPLEADO) -->
+            <a th:href="@{/clientes/nuevo}" class="btn btn-success" sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
                 ➕ Agregar Cliente
             </a>
         </div>
@@ -61,14 +64,20 @@
                     <td th:text="${cliente.email}"></td>
                     <td th:text="${cliente.telefono}"></td>
                     <td class="text-center">
-                        <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}" class="btn btn-sm btn-outline-warning me-2">
+
+                        <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}"
+                           class="btn btn-sm btn-outline-warning me-2"
+                           sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
                             ✏️ Editar
                         </a>
+
                         <a th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
                            class="btn btn-sm btn-outline-danger"
-                           onclick="return confirm('¿Seguro que deseas eliminar este cliente?')">
+                           onclick="return confirm('¿Seguro que deseas eliminar este cliente?')"
+                           sec:authorize="hasRole('ADMIN')">
                             🗑️ Eliminar
                         </a>
+
                     </td>
                 </tr>
                 </tbody>

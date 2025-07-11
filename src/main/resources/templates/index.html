@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <title>Guardería de Mascotas - Inicio</title>
@@ -27,24 +28,37 @@
 </head>
 <body class="bg-light">
 
-<!-- Barra de navegación -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#" th:href="@{/}">🐾 Guardería Mascotas</a>
+        <a class="navbar-brand fw-bold" th:href="@{/}">🐾 Guardería Mascotas</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/clientes}">Clientes</a>
+                <!-- Links de navegación solo visibles si está autenticado -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/clientes}">Clientes</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/mascotas}">Mascotas</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+                </li>
+
+                <!-- Botón Iniciar Sesión -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-light btn-sm ms-2" th:href="@{/login}">🔐 Iniciar Sesión</a>
+                </li>
+
+                <!-- Botón Cerrar Sesión -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm ms-2">🚪 Cerrar Sesión</button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -64,10 +78,17 @@
     <div class="bg-white p-4 rounded shadow-sm text-center">
         <h2 class="fw-semibold mb-3">¿Qué deseas hacer hoy?</h2>
         <p class="mb-4">Usa la barra de navegación para gestionar clientes, mascotas, empleados y más.</p>
-        <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+        <!-- Botones visibles solo si está autenticado -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap" sec:authorize="isAuthenticated()">
             <a th:href="@{/clientes}" class="btn btn-outline-primary btn-lg">Ver Clientes</a>
             <a th:href="@{/mascotas}" class="btn btn-outline-success btn-lg">Ver Mascotas</a>
             <a th:href="@{/empleados}" class="btn btn-outline-warning btn-lg">Ver Empleados</a>
+        </div>
+
+        <!-- Mensaje para invitados -->
+        <div sec:authorize="!isAuthenticated()" class="text-muted mt-3">
+            Inicia sesión para acceder a las funciones del sistema.
         </div>
     </div>
 </div>

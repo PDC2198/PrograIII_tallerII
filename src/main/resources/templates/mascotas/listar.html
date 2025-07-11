@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Lista de Mascotas</title>
@@ -38,7 +39,12 @@
     <div class="table-container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">🐕 Lista de Mascotas</h2>
-            <a th:href="@{/mascotas/nuevo}" class="btn btn-success">➕ Agregar Mascota</a>
+
+            <!-- Botón Agregar (ADMIN, EMPLEADO, CLIENTE) -->
+            <a th:href="@{/mascotas/nuevo}" class="btn btn-success"
+               sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO', 'CLIENTE')">
+                ➕ Agregar Mascota
+            </a>
         </div>
 
         <div class="table-responsive">
@@ -59,14 +65,24 @@
                     <td th:text="${mascota.raza}"></td>
                     <td th:text="${mascota.cliente.nombre + ' ' + mascota.cliente.apellido}"></td>
                     <td class="text-center">
-                        <a th:href="@{/mascotas/detalle/{id}(id=${mascota.id})}" class="btn btn-sm btn-outline-info me-1">
+                        <!-- Botón Ver (todos los roles pueden ver) -->
+                        <a th:href="@{/mascotas/detalle/{id}(id=${mascota.id})}"
+                           class="btn btn-sm btn-outline-info me-1">
                             👁️ Ver
                         </a>
-                        <a th:href="@{/mascotas/editar/{id}(id=${mascota.id})}" class="btn btn-sm btn-outline-warning me-1">
+
+                        <!-- Botón Editar (solo ADMIN o EMPLEADO) -->
+                        <a th:href="@{/mascotas/editar/{id}(id=${mascota.id})}"
+                           class="btn btn-sm btn-outline-warning me-1"
+                           sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
                             ✏️ Editar
                         </a>
-                        <a th:href="@{/mascotas/eliminar/{id}(id=${mascota.id})}" class="btn btn-sm btn-outline-danger"
-                           onclick="return confirm('¿Seguro que deseas eliminar esta mascota?')">
+
+                        <!-- Botón Eliminar (solo ADMIN o EMPLEADO) -->
+                        <a th:href="@{/mascotas/eliminar/{id}(id=${mascota.id})}"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('¿Seguro que deseas eliminar esta mascota?')"
+                           sec:authorize="hasAnyRole('ADMIN', 'EMPLEADO')">
                             🗑️ Eliminar
                         </a>
                     </td>
